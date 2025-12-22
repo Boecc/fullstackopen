@@ -22,6 +22,9 @@ const Info = (props) => {
       <Statistics statistic='good' count={props.good} />
       <Statistics statistic='neutral' count={props.neutral} />
       <Statistics statistic='bad' count={props.bad} />
+      <Statistics statistic='all' count={props.all} />
+      <Statistics statistic='average' count={props.average} />
+      <Statistics statistic='positive' count={props.positive} />
     </div>
   )
 }
@@ -35,6 +38,8 @@ const App = () => {
   const handleNeutral = () => setNeutral(neutral + 1)
   const handleBad = () => setBad(bad + 1)
 
+  const total = good + neutral + bad
+
   return (
     <div>
       <Header content='give feedback' />
@@ -44,7 +49,14 @@ const App = () => {
         handleBad={handleBad}
       />
       <Header content='statistics' />
-      <Info good={good} neutral={neutral} bad={bad} />
+      <Info 
+        good={good} 
+        neutral={neutral} 
+        bad={bad} 
+        all={total}
+        average = {((good - bad) / total).toFixed(2)}
+        positive = {((good / total) * 100).toFixed(2) + '%'}
+      />
     </div>
   )
 }
