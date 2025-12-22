@@ -17,6 +17,13 @@ const Content = ({ handleGood, handleNeutral, handleBad }) => {
 }
 
 const Info = (props) => {
+  if (props.all === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return (
     <div>
       <Statistics statistic='good' count={props.good} />
