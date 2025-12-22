@@ -1,0 +1,6 @@
+# Ignorar dependencias generales (por si acaso)
+node_modules/
+.DS_Store
+
+# Ignorar la carpeta de apuntes/ejemplos
+part2/part2-notes-frontend/
