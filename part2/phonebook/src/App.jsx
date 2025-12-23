@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -25,15 +24,18 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     }
 
     if (persons.find(person => person.name === newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create(personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
 
@@ -41,6 +43,17 @@ const App = () => {
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleSearchChange = (event) => setSearchPerson(event.target.value)
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(searchPerson.toLowerCase()))
+  const handleDelete = id => {
+    const person = persons.find(n => n.id === id)
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService
+        .removePerson(person.id)
+        .then(response => {
+          setPersons(persons.filter(n => n.id !== id))
+        })
+    }
+
+  }
 
   return (
     <div>
@@ -55,7 +68,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete}/>
     </div>
   )
 }
