@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 import personService from './services/persons'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [searchPerson, setSearchPerson] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -29,6 +32,8 @@ const App = () => {
             setPersons(persons.map(person =>
               person.id !== existingPerson.id ? person : response.data
             ))
+            setNotificationMessage(`Updated number for ${existingPerson.name}`)
+            setTimeout(() => setNotificationMessage(null), 5000)
           })
       }
     } else {
@@ -36,6 +41,8 @@ const App = () => {
         .create(personObject)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setNotificationMessage(`Added ${personObject.name}`)
+          setTimeout(() => setNotificationMessage(null), 5000)
         })
     }
   }
@@ -50,6 +57,8 @@ const App = () => {
         .removePerson(person.id)
         .then(response => {
           setPersons(persons.filter(n => n.id !== id))
+          setNotificationMessage(`${person.name} deleted`)
+          setTimeout(() => setNotificationMessage(null), 5000)
         })
     }
 
@@ -58,9 +67,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter searchPerson={searchPerson} handleSearchChange={handleSearchChange} />
       <h2>add a new</h2>
-      <PersonForm createPerson={addPerson}/>
+      <PersonForm createPerson={addPerson} />
       <h2>Numbers</h2>
       <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>
