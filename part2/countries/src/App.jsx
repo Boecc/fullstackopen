@@ -21,11 +21,12 @@ const App = () => {
   }
 
   const countryToShow = countries.filter(country => country.name.common.toLowerCase().includes(searchCountry.toLowerCase()))
-
+  const handleShow = (name) => setSearchCountry(name)
+  
   return (
     <div>
       <SearchBar value={searchCountry} onChange={handleSearchChange} />
-      <Content countryToShow={countryToShow} />
+      <Content countryToShow={countryToShow} handleShow={handleShow}/>
     </div>
   )
 }

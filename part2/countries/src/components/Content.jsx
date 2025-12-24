@@ -1,4 +1,4 @@
-const Content = ({ countryToShow }) => {
+const Content = ({ countryToShow, handleShow }) => {
 
   if (countryToShow.length > 10) {
     return <div>Too many matches, specify another filter</div>
@@ -13,13 +13,19 @@ const Content = ({ countryToShow }) => {
         <p>Capital {country.capital}</p>
         <p>Area {country.area}</p>
         <h2>Languages</h2>
-        <ul>{languages.map(language =><li key={language}>{language}</li>)}</ul>
+        <ul>{languages.map(language => <li key={language}>{language}</li>)}</ul>
         <img src={country.flags.png} />
       </div>
     )
   }
   return (
-    <ul>{countryToShow.map(country => <li key={country.name.common}>{country.name.common}</li>)}</ul>
+    <ul>
+      {countryToShow.map(country =>
+        <li key={country.name.common}>
+          {country.name.common}
+          <button onClick={()=>handleShow(country.name.common)}>Show</button>
+        </li>)}
+    </ul>
   )
 }
 
