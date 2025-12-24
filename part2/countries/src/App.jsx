@@ -1,40 +1,8 @@
 import { useState, useEffect } from "react"
 
+import Content from './components/Content'
 import getAll from "./services/countries"
-
-const Filter = ({ countryToShow }) => {
-  
-  if (countryToShow.length > 10) {
-    return (
-      <div>Too many matches, specify another filter</div>
-    )
-  } else if (countryToShow.length === 1) {
-    const country = countryToShow[0]
-    const languagesObject = country.languages
-    const languages = Object.values(languagesObject)
-    console.log(country);
-    
-    return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <p>Capital {country.capital}</p>
-        <p>Area {country.area}</p>
-        <h2>Languages</h2>
-        <ul>
-          {languages.map(language =>
-            <li key={language}>{language}</li>
-          )}
-        </ul>
-        <img src={country.flags.png} />
-      </div>
-    )
-  }
-  return(
-    <ul>
-        {countryToShow.map(country => <li key={country.name.common}>{country.name.common}</li>)}
-      </ul>
-  )
-}
+import SearchBar from "./components/SearchBar"
 
 const App = () => {
 
@@ -43,9 +11,9 @@ const App = () => {
 
   useEffect(() => {
     getAll()
-    .then(response => {
-      setCountries(response.data)
-    })
+      .then(response => {
+        setCountries(response.data)
+      })
   }, [])
 
   const handleSearchChange = (event) => {
@@ -56,11 +24,8 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        find countries: <input onChange={handleSearchChange}/>
-      </div>
-
-      <Filter countryToShow={countryToShow} />
+      <SearchBar value={searchCountry} onChange={handleSearchChange} />
+      <Content countryToShow={countryToShow} />
     </div>
   )
 }
