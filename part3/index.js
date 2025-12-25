@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const app = express()
 
 
+morgan.token('body', function (req, res) {return JSON.stringify(req.body)})
 app.use(express.json())
 
 let persons = [
@@ -28,7 +29,7 @@ let persons = [
   }
 ]
 
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/info', (request, response) => {
   const now = new Date().toString()
