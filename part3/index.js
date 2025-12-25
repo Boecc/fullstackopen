@@ -1,5 +1,7 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
 
 app.use(express.json())
 
@@ -25,6 +27,8 @@ let persons = [
     "number": "39-23-6423122"
   }
 ]
+
+app.use(morgan('tiny'))
 
 app.get('/info', (request, response) => {
   const now = new Date().toString()
@@ -85,6 +89,8 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
   response.json(person)
 })
+
+
 
 const PORT = 3001
 app.listen(PORT, () => {
