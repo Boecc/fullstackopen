@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
 
 import Content from './components/Content'
-import getAll from "./services/countries"
 import SearchBar from "./components/SearchBar"
+
+import getAll from "./services/countries"
 
 const App = () => {
 
@@ -21,8 +22,9 @@ const App = () => {
   }
 
   const countryToShow = countries.filter(country => country.name.common.toLowerCase().includes(searchCountry.toLowerCase()))
+
   const handleShow = (name) => setSearchCountry(name)
-  
+
   return (
     <div>
       <SearchBar value={searchCountry} onChange={handleSearchChange} />
