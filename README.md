@@ -28,7 +28,7 @@ The repository is organized by course parts:
 
 ## Phonebook App (Backend + Frontend Build)
 App deployed and working in Fly.io
-[https://https://phonebook-backend-javierotero.fly.dev/](https://https://phonebook-backend-javierotero.fly.dev/)
+[https://phonebook-backend-javierotero.fly.dev/](https://phonebook-backend-javierotero.fly.dev/)
 
 ## 🛠 Technologies Used
 
