@@ -24,6 +24,12 @@ The repository is organized by course parts:
 - [ ] **Part 12:** Containers
 - [ ] **Part 13:** Relational databases
 
+# Full Stack Open - Part 3
+
+## Phonebook App (Backend + Frontend Build)
+App deployed and working in Fly.io
+[https://tu-nombre-de-app.fly.dev](https://tu-nombre-de-app.fly.dev)
+
 ## 🛠 Technologies Used
 
 * **Frontend:** React, Redux, React Router, Axios
