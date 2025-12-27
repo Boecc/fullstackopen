@@ -56,6 +56,14 @@ const App = () => {
           setNotificationMessage(`Added ${personObject.name}`)
           setTimeout(() => setNotificationMessage(null), 5000)
         })
+        .catch( error => {
+          console.log(error.response.data.error);
+          setNotificationType('error')
+          setNotificationMessage(
+            error.response.data.error
+          )
+          setTimeout(() => setNotificationMessage(null), 5000)
+        })
     }
   }
 
