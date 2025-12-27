@@ -13,15 +13,17 @@ app.use(express.static('dist'))
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-// app.get('/info', (request, response) => {
-//   const now = new Date().toString()
-//   response.send(
-//     `
-//     <p>Phonebook has info for ${persons.length} people</p>
-//     <p>${now}</p>
-//     `
-//   )
-// })
+app.get('/info', (request, response) => {
+  const now = new Date().toString()
+  Person.countDocuments({}).then(count => {
+    response.send(
+      `
+      <p>Phonebook has info for ${count} people</p>
+      <p>${now}</p>
+      `
+    )
+  })
+})
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
