@@ -23,9 +23,23 @@ const mostBlogs = (blogs) => {
     return _.maxBy(formattedList, 'blogs')
 }
 
+const mostLikes = (blogs) => {
+    const groupedBlogs = _.groupBy(blogs, 'author')
+    
+    const authorsWithLikes = _.map(groupedBlogs, (authorBlogs, authorName) => {
+        return {
+            author: authorName,
+            likes: _.sumBy(authorBlogs, 'likes')
+        }
+    })
+    
+    return _.maxBy(authorsWithLikes, 'likes')
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
