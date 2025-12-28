@@ -24,7 +24,7 @@ The repository is organized by course parts:
 - [ ] **Part 12:** Containers
 - [ ] **Part 13:** Relational databases
 
-# Full Stack Open - Part 3
+## Full Stack Open - Part 3
 
 ## Phonebook App (Backend + Frontend Build)
 App deployed and working in Fly.io
