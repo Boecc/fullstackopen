@@ -85,6 +85,32 @@ test('likes default to 0 if not given', async () => {
   assert.strictEqual(response.body.likes, 0)
 })
 
+test('blog without title is not added', async () => {
+  const newBlog = {
+    author: 'Javier Otero',
+    url: 'https://fullstackopen.com/',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('blog without url is not added', async () => {
+  const newBlog = {
+    title: 'async/await simplifies making async calls',
+    author: 'Javier Otero',
+    likes: 2,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
