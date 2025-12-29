@@ -48,6 +48,28 @@ test('the unique identifier property of the blog posts is named id', async () =>
   assert.ok(blogToInspect.id)
 })
 
+test('new blog added', async () => {
+  const newBlog = {
+    title: 'async/await simplifies making async calls',
+    author: 'Javier Otero',
+    url: 'https://fullstackopen.com/',
+    likes: 15,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const initialBlogsLength = 2
+  assert.strictEqual(response.body.length, initialBlogsLength + 1)
+
+  const titles = response.body.map(r => r.title)
+  assert(titles.includes('async/await simplifies making async calls'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
