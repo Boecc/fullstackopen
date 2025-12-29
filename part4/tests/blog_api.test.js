@@ -126,6 +126,25 @@ test('blog deleted', async () => {
   assert(!titles.includes(blogToDelete.title))
 })
 
+test('update blog', async () => {
+  const blogsAtStart = await Blog.find({})
+  const blogToUpdate = blogsAtStart[0]
+  const updatedData = {
+    title: 'easy HTML',
+    likes: blogToUpdate.likes + 1
+  }
+
+  const result = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedData)
+    .expect(200)
+
+  assert.strictEqual(result.body.likes, blogToUpdate.likes + 1)
+  
+  const blogsAtEnd = await Blog.find({})
+  assert.strictEqual(result.body.title, blogsAtEnd[0].title)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
