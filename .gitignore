@@ -1,6 +1,3 @@
-# Ignorar dependencias generales (por si acaso)
+
 node_modules/
 .DS_Store
-
-# Ignorar la carpeta de apuntes/ejemplos
-tests/
