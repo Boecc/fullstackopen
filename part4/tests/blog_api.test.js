@@ -70,6 +70,21 @@ test('new blog added', async () => {
   assert(titles.includes('async/await simplifies making async calls'))
 })
 
+test('likes default to 0 if not given', async () => {
+  const newBlog = {
+    title: 'async/await simplifies making async calls',
+    author: 'Javier Otero',
+    url: 'https://fullstackopen.com/',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  assert.strictEqual(response.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
