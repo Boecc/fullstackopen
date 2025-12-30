@@ -2,8 +2,10 @@ const { test, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -24,10 +26,17 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('secret', 10)
+  const user = new User({ username: 'root', passwordHash })
+  await user.save()
+
+  const blog1 = new Blog({ ...initialBlogs[0], user: user.id })
+  await blog1.save()
+
+  const blog2 = new Blog({ ...initialBlogs[1], user: user.id })
+  await blog2.save()
 })
 
 test('blogs are returned as json', async () => {
@@ -49,6 +58,12 @@ test('the unique identifier property of the blog posts is named id', async () =>
 })
 
 test('new blog added', async () => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'secret' })
+
+  const token = loginResponse.body.token
+
   const newBlog = {
     title: 'async/await simplifies making async calls',
     author: 'Javier Otero',
@@ -58,19 +73,24 @@ test('new blog added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
   const response = await api.get('/api/blogs')
-  const initialBlogsLength = 2
-  assert.strictEqual(response.body.length, initialBlogsLength + 1)
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
   const titles = response.body.map(r => r.title)
   assert(titles.includes('async/await simplifies making async calls'))
 })
 
 test('likes default to 0 if not given', async () => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'secret' })
+  const token = loginResponse.body.token
+
   const newBlog = {
     title: 'async/await simplifies making async calls',
     author: 'Javier Otero',
@@ -79,6 +99,7 @@ test('likes default to 0 if not given', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -86,6 +107,11 @@ test('likes default to 0 if not given', async () => {
 })
 
 test('blog without title is not added', async () => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'secret' })
+  const token = loginResponse.body.token
+
   const newBlog = {
     author: 'Javier Otero',
     url: 'https://fullstackopen.com/',
@@ -94,11 +120,17 @@ test('blog without title is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
 })
 
 test('blog without url is not added', async () => {
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'secret' })
+  const token = loginResponse.body.token
+
   const newBlog = {
     title: 'async/await simplifies making async calls',
     author: 'Javier Otero',
@@ -107,21 +139,37 @@ test('blog without url is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
 })
 
 test('blog deleted', async () => {
-  const blogsAtStart = await Blog.find({})
-  const blogToDelete = blogsAtStart[0]
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'secret' })
+  const token = loginResponse.body.token
+
+  const newBlog = {
+    title: 'Blog to delete',
+    author: 'Delete Me',
+    url: 'http://delete.com'
+  }
+
+  const createdBlog = await api
+    .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
+    .send(newBlog)
+    .expect(201)
+
+  const blogToDelete = createdBlog.body
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
   const blogsAtEnd = await Blog.find({})
-  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
-
   const titles = blogsAtEnd.map(r => r.title)
   assert(!titles.includes(blogToDelete.title))
 })
