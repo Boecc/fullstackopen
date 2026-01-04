@@ -97,7 +97,7 @@ const App = () => {
             {user.name} logged in
             <button onClick={handleLogOut}>logout</button>
           </p>
-          <Togglable buttonLabel='new blog'>
+          <Togglable buttonLabel='create new blog'>
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {blogs.map(blog =>
