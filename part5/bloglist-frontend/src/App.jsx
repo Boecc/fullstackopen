@@ -5,6 +5,7 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import './index.css'
 
 const App = () => {
@@ -12,7 +13,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({ message: null, type: ''})
+  const [notification, setNotification] = useState({ message: null, type: '' })
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -39,7 +41,7 @@ const App = () => {
       )
 
       blogService.setToken(user.token)
-      
+
       setUser(user)
       setUsername('')
       setPassword('')
@@ -76,7 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Blogs Application</h2>
-      <Notification message={notification.message} type={notification.type}/>
+      <Notification message={notification.message} type={notification.type} />
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
@@ -95,7 +97,9 @@ const App = () => {
             {user.name} logged in
             <button onClick={handleLogOut}>logout</button>
           </p>
-          <BlogForm createBlog={addBlog}/>
+          <Togglable buttonLabel='new blog'>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
