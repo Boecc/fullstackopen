@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -17,13 +19,13 @@ const App = () => {
       blogService.setToken(user.token)
     }
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )
   }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -34,7 +36,7 @@ const App = () => {
       )
 
       blogService.setToken(user.token)
-
+      
       setUser(user)
       setUsername('')
       setPassword('')
@@ -49,45 +51,41 @@ const App = () => {
     setUser(null)
   }
 
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-              <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-              <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
-    )
+  const addBlog = async (blogObject) => {
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+    } catch (exception) {
+      console.error('Error creating blog', exception)
+    }
   }
 
   return (
     <div>
-      <h2>blogs</h2>
-      <p>
-        {user.name} logged in
-        <button onClick={handleLogOut}>logout</button>
-      </p>
-
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      <h2>Blogs Application</h2>
+      {user === null ? (
+        <div>
+          <h2>Log in to application</h2>
+          <LoginForm
+            username={username}
+            passowrd={password}
+            handleUserNameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        </div>
+      ) : (
+        <div>
+          <h2>blogs</h2>
+          <p>
+            {user.name} logged in
+            <button onClick={handleLogOut}>logout</button>
+          </p>
+          <BlogForm createBlog={addBlog}/>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
       )}
     </div>
   )
