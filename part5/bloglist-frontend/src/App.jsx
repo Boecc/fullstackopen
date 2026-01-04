@@ -4,12 +4,15 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState({ message: null, type: ''})
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -40,9 +43,10 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      showNotification(`welcome ${username}`, 'success')
     } catch (exception) {
       console.error('Login error', exception)
-      alert('Wrong credentials')
+      showNotification('wrong username or password', 'error')
     }
   }
 
@@ -55,14 +59,24 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
+      showNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'success')
     } catch (exception) {
       console.error('Error creating blog', exception)
+      showNotification('Error creating blog', 'error')
     }
+  }
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification({ message: null, type: '' })
+    }, 5000)
   }
 
   return (
     <div>
       <h2>Blogs Application</h2>
+      <Notification message={notification.message} type={notification.type}/>
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
