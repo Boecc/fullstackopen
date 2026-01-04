@@ -94,6 +94,19 @@ const App = () => {
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        showNotification(`Blog ${blog.title} removed`, 'success')
+      } catch (exception) {
+        console.error(exception)
+        showNotification('Error removing blog', 'error')
+      }
+    }
+  }
+
   return (
     <div>
       <h2>Blogs Application</h2>
@@ -120,7 +133,12 @@ const App = () => {
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {sortedBlogs.map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={handleLike}/>
+            <Blog 
+              key={blog.id} 
+              blog={blog} updateBlog={handleLike} 
+              deleteBlog={handleDelete}
+              user={user}
+            />
           )}
         </div>
       )}
