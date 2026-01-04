@@ -83,8 +83,9 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.update(blog.id, updateBlog)
-      setBlogs(blogs.map(b => b.id !== blog.id ? b : returnedBlog))
-      showNotification(`${returnedBlog.title} have a new like, likes ${returnedBlog.likes}`, 'success')
+      const completeBlog = { ...returnedBlog, user: blog.user }
+      setBlogs(blogs.map(b => b.id !== blog.id ? b : completeBlog))
+      showNotification(`${completeBlog.title} have a new like, likes ${completeBlog.likes}`, 'success')
     } catch (exception) {
       console.error('Error updating likes', exception)
       showNotification('Error updating blog', 'error')
