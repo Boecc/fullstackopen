@@ -35,7 +35,7 @@ App deployed and working in Fly.io
 * **Frontend:** React, Redux, React Router, Axios
 * **Backend:** Node.js, Express
 * **Database:** MongoDB, PostgreSQL (for containers/relational parts)
-* **Testing:** Jest, Cypress, Supertest
+* **Testing:** Vitest, Cypress, Supertest
 * **Others:** GraphQL, TypeScript, Docker, GitHub Actions
 
 ## 📜 Certificate
